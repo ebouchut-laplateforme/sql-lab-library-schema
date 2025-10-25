@@ -104,5 +104,6 @@ erDiagram
 
 ### Database Schema Creation Script
 
-TODO
+The schema creation SQL script [`config/database/schema.sql`](https://github.com/ebouchut-laplateforme/sql-lab-library-schema/blob/main/config/database/schema.sql) creates the database structure that is the database itself, a user with access to **this** database only, the tables, the keys, the junction tables, and the refential integrity constraints).
+
 
