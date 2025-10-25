@@ -7,7 +7,7 @@
 
 /*
  * Start a transaction to group the SQL statements (between `BEGIN;` and `COMMIT;`)
- * to create the database and its structure (tables and views)
+ * to create the database, a user, its structure (tables, integrity constraints)
  * This ensures the creation is either made **as a single unit** or cancelled on error.
  */
 BEGIN;
@@ -41,7 +41,7 @@ GRANT ALL
     ON library.*
     TO 'librarian'@'127.0.0.1'
 ;
-FLUSH PRIVILEGES;
+FLUSH PRIVILEGES; -- Thx Aleij.
 
 CREATE TABLE books (
   id            INT           PRIMARY KEY AUTO_INCREMENT,
