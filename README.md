@@ -3,38 +3,54 @@
 
 ## Presentation
 
-In this SQL lab you will **create** a minimalist **database structure** for a **library management app**.
+In this SQL lab you will **create** a minimalist **database structure** for a **library management app**.  
+The target **database** server is **MySQL**.  
+The goal is to practice the SQL DDL statements (Data Defintiion Language) to create the database structure:
+
+- Create the **database**,
+- Create a **user** with total access to this databas onlye
+- Create the **tables** and their **relationsships** (**primary keys**, required (i.e., non null) fields, **foreign keys**)
+
+
+## Terminology
+
+<dl>
+    <dt>DDL</dt>
+    <dd>Data Definition Language</dd>
     
-The target **database** is **MySQL** (version 8.0) so you will ned to use MySQL SQLextensions.
-    
-The goal is to practice the DDL statements to create the database structure:
-- Create the **database**, 
-- Create a **user** with access to this database
-- Create the **tables** and their **relationsships** (**primary keys**, required (i.e., non null) fields, **foreign keys**) 
+    <dt>FK</dt>
+    <dd>*Foreign Key* is a field of a database table (B) whose values reference a row of another table (A) via its identifier (most often the primary key of table A)</dd>
+
+    <dt>PK</dt>
+    <dd>denotes the Primary Key, a field of a database table that must be present, not null, and indexed by default to improve search performance. Each value of the primary key column identifies unambiguously the row of the table it belongs to.</dd>
+</dl>
 
 
 ## Lab Statement
 
-
->  Design a simplified data model for a library management application.
->  
+> Design a simplified data model for a library management application.
+>
 > - Your model should allow the following information:
 >
-> - Book titles
-> - Author (a single author per book)
-> - Genres
->
+>   - Book
+>     - with the fields:
+>       - `title` is a string (required), will be used as a search criterion 
+>       - `isbn` is a string (required),  will be used as a search criterion
+>       - `first_edition` the original release date (without time nor timezone)
+>     - has relationships with other entities
+>       - A book has a **single** author (contrieved for the sake of this exercise).
+>       - A book is classified by zero or more genres.
+> - Author
+>     - has a `name` string (required) and used as a search criterion
+>     - An author can write zero or more books
+> - Genre
+>     - has a `name` which is a string (required)
+>     - A genre can classify zero or more books.
 > - Define the entities
 > - Define the associations between the tables using an identifier
 
+
 #### ERD Diagram
-
-I created the below **ERD (Entity Relation Diagram)** with [Mermaid](https://mermaid.js.org/) which is a Markdown extension with which you can create many different diagram types.  
-You can create it using any text/Markdown editor, no need for a fancy (online) application.
-You give a textual description of the diagram directly within your Markdown file (in this cas the README file).
-Once rendered you get the diagram.
-Many [tools (editor, IDE, platforms)](https://mermaid.js.org/ecosystem/integrations-community.html) suppport Mermaid, such as GitHub, GitLab, Wordpress, Slack, VsCode, Obsidian...
-
 
 ```mermaid
 ---
@@ -44,30 +60,51 @@ config:
 ---
 erDiagram
 
-    books { 
-        id               INT            PK
-        title            VARCHAR(255)   UK
-        isbn             VARCHAR(255)   UK
+    books {
+        id                 INT            PK
+        title              VARCHAR(255)   UK
+        isbn               VARCHAR(255)   UK
+        first_edition      DATE              
     }
     authors {
-        id               INT            PK
-        name             VARCHAR(255)   UK
-        book_id          INT            FK
+        id                 INT            PK
+        name               VARCHAR(255)   UK
+        book_id            INT            FK
     }
     genres {
-        id               INT            PK
-        name             VARCHAR(255)   UK
-        book_id          INT            FK    
+        id                 INT            PK
+        name               VARCHAR(255)   UK
     }
-    
-    books     }o..|{ authors        : "wrote"
-    books     }o..|{ genres         : "has"
+    books_genres {
+        id                 INT            PK
+        book_id            INT            FK
+        genre_id           INT            FK
+    }
+
+    books        }o..|{ authors        : "written by"
+    books        }o..o{ books_genres   : "classified by"
+    books_genres }o..o{ genres         : "classifies"
 ```
 
-You too can create your own ERD diagram today, simply read this [the documentation]([ERD (Entity Relation Diagram)](https://mermaid.js.org/syntax/entityRelationshipDiagram.html)) and take a look at the code of this diagram in the README.
+> [!INFO] 
+> I created this **ERD (Entity Relationship Diagram)** with [Mermaid](https://mermaid.js.org/).
+> *Mermaid* is a Markdown extension that allows you to create many different types of diagram
+> with any text/Markdown editor.
+> Mermaid is free and open-source. There is no need to lock in a fancy application or costly online service.
+> And the cherry on the cake, the fact that the diagram is text means a lot. 
+> You can add the diagram to your project and use version control to keep the code and the documentation in sync.
+> You give a textual description of the diagram directly within your Markdown file (in this cas the README file).
+> Once rendered you get the visual diagram.
+> Many [tools (editor, IDE, platforms)](https://mermaid.js.org/ecosystem/integrations-community.html) suppport Mermaid, such as GitHub, GitLab, Wordpress, Slack, VsCode, Obsidian...
+
+> [!TIP]
+> You too can start creating your own ERD diagram today, simply read
+> [the documentation]([ERD (Entity Relation Diagram)](https://mermaid.js.org/syntax/entityRelationshipDiagram.html),
+> and take a look at the [source code of this diagram](TODO) to get a concrete example.
+
 
 
 #### Database Schema Creation Script
 
-
 TODO
+
