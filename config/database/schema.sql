@@ -43,28 +43,30 @@ GRANT ALL
 ;
 FLUSH PRIVILEGES; -- Thx Aleij.
 
+/*
+ * Many-to-one relationship between books and authors 
+ * Many books (N) --> (1) one author
+ */
+CREATE TABLE authors (
+  id            INT           PRIMARY KEY AUTO_INCREMENT,
+  name          VARCHAR(255)  NOT NULL
+);
+
 CREATE TABLE books (
   id            INT           PRIMARY KEY AUTO_INCREMENT,
   title         VARCHAR(255)  NOT NULL,
   isbn          VARCHAR(255)  UNIQUE NOT NULL,
-  first_edition DATE
-);
-
-CREATE TABLE authors (
-  id            INT           PRIMARY KEY AUTO_INCREMENT,
-  name          VARCHAR(255),
-  isbn          VARCHAR(255)  UNIQUE NOT NULL,
-  book_id       INT           NOT NULL,
+  first_edition DATE,
+  author_id     INT           NOT NULL,
   
-  CONSTRAINT    fk_authors_book_id_books
-    FOREIGN KEY (book_id) REFERENCES books (id)
+  CONSTRAINT    fk_books_author_id_authors
+    FOREIGN KEY (author_id) REFERENCES authors (id)
         ON UPDATE CASCADE
 );
 
 CREATE TABLE genres (
   id            INT           PRIMARY KEY AUTO_INCREMENT,
-  name          VARCHAR(255),
-  book_id       INT           NOT NULL
+  name          VARCHAR(255)  NOT NULL
 );
 
 /*

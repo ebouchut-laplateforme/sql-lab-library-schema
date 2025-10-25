@@ -36,7 +36,7 @@ The goal is to practice the SQL DDL statements (Data Defintiion Language) to cre
 >       - `isbn` is a string (required),  will be used as a search criterion
 >       - `first_edition` the original release date (without time nor timezone)
 >     - has relationships with other entities
->       - A book has a **single** author (contrieved for the sake of this exercise).
+>       - A book has exactly **one** author (contrieved for the sake of this exercise).
 >       - A book is classified by zero or more genres.
 > - Author
 >     - has a `name` string (required) and used as a search criterion
@@ -63,11 +63,11 @@ erDiagram
         title              VARCHAR(255)   UK
         isbn               VARCHAR(255)   UK
         first_edition      DATE              
+        author_id          INT            FK
     }
     authors {
         id                 INT            PK
         name               VARCHAR(255)   UK
-        book_id            INT            FK
     }
     genres {
         id                 INT            PK
@@ -79,7 +79,7 @@ erDiagram
         genre_id           INT            FK
     }
 
-    books        }o..|{ authors        : "written by"
+    books        }o..|| authors        : "written by"
     books        }o..o{ books_genres   : "classified by"
     books_genres }o..o{ genres         : "classifies"
 ```
