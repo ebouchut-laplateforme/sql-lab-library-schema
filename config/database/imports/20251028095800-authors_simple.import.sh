@@ -28,21 +28,16 @@ CSV_FILE=${1:-20251028095800-authors_simple.import.csv}
 # Note: \047 is an escape sequence that denotes the simple quote (`'`).
 # `<<-'END_AWK'` is a bash here-doc notation for a multiline string where variables are not interpolated.
 # The purpose of using `previous_full_name` trick is to end each row/value with a comma except the last one.
+# `sort | uniq -u`: Removes duplicates. Side effect: lines are ordered.
 #
-awk -F, -f - "$CSV_FILE"  <<-'END_AWK'
-  BEGIN {
-    print "BEGIN;\n";
-    print "USE library;\n\n";
-    print "INSERT INTO authors_simple (full_name) VALUES";
-  }
+awk -F, -f - "$CSV_FILE"  <<-'END_AWK1' |
   NR == 1 {
     # Ignore the first line (header)
     next
   }
-  NR > 2 {
+  NR >= 2 {
     if (length(previous_full_name) > 0) {
-      # Note there is a comma after the value
-      print "\t('" previous_full_name "'),";
+      print previous_full_name;
     }
   }
   {
@@ -80,11 +75,32 @@ awk -F, -f - "$CSV_FILE"  <<-'END_AWK'
   }
   END {
     if (length(previous_full_name) > 0) {
-      # Note: No comma after the last value (last line)
-      print "\t('" previous_full_name "')";
+      print previous_full_name;
     }
+  }
+END_AWK1
+sort | uniq | awk -f <(cat <<-'END_AWK2'
+  BEGIN {
+    print "BEGIN;\n";
+    print "USE library;\n\n";
+    print "INSERT INTO authors_simple (full_name) VALUES";
+  }
+  NR == 1 {
+    previous_full_name = $0;
+  }
+  NR >= 2 {
+      # Note there is a comma after the value
+    print "\t('" previous_full_name "'),";
+  }
+  {
+    previous_full_name = $0;
+  }
+  END {
+    # Note: No comma after the **last** value (last line)
+    print "\t('" previous_full_name "')";
 
     print ";\n";
     print "COMMIT;\n";
   }
-END_AWK
+END_AWK2
+)
