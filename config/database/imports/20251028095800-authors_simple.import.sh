@@ -33,7 +33,7 @@ awk -F, -f - "$CSV_FILE"  <<-'END_AWK'
   BEGIN {
     print "BEGIN;\n";
     print "USE library;\n\n";
-    print "INSERT INTO authors_simple (title) VALUES";
+    print "INSERT INTO authors_simple (full_name) VALUES";
   }
   NR == 1 {
     # Ignore the first line (header)
@@ -84,7 +84,7 @@ awk -F, -f - "$CSV_FILE"  <<-'END_AWK'
       print "\t('" previous_full_name "')";
     }
 
-    print ");\n";
+    print ";\n";
     print "COMMIT;\n";
   }
 END_AWK

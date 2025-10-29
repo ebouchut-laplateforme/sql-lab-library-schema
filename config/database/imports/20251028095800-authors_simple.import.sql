@@ -3,7 +3,7 @@ BEGIN;
 USE library;
 
 
-INSERT INTO authors_simple (title) VALUES
+INSERT INTO authors_simple (full_name) VALUES
 	('Peter Ackroyd'),
 	('Amir Aczel'),
 	('Jeffery Archer'),
@@ -131,7 +131,7 @@ INSERT INTO authors_simple (title) VALUES
 	('Morris West'),
 	('Bob Woodward'),
 	('Hussain Zaidi')
-);
+;
 
 COMMIT;
 
