@@ -4,19 +4,17 @@
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # This shell script reads data from a CSV file,
-# and generates a SQL script that inserts this data .
+# and generates a SQL script that inserts the CSV data in the `authors_simple table`.
 #
-# When run this SQL script will populate the authors_simple table w.
-# that populate the books table on the standard output.
-# The CSV contains the value of the title split into 2 columns that we first  need to concatenate before insertion.
-# The generated SQL script contains a SQL INSERT statement.
-#
-# SQL script  populates the `full_name` column of the `authors_simple` table
-# with the concatenation of the first 2 columns (last and first name) found in each row of the  CSV file.
+# Each row of this CSV contains at most 2 columns (first the last name, then the first name).
+# The `authors_simple` table contains a `full_name` column.
+# We will build the full name by concatenating the first and the last name fields of a CSV row,
+#   separated with a space and store this into the `authors_simple.full_name`.
+# The generated SQL script contains a **single** SQL INSERT statement.
 #
 # The CSV file requires processing data before they can be inserted:
 # - We do not insert the first line because it is a header (not data).
-# - Each row contains 2 columns that we need to be concatenate before insertion.
+# - Each row contains (at most ;-) 2 columns that we need to be concatenate before insertion.
 #
 # See: https://github.com/ebouchut-laplateforme/sql-lab-library-schema/issues/8
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
