@@ -398,7 +398,7 @@ Result:
 |             97 | 976              | Mayotte         |
 
 
-####  4. List the names of the 10 most populous towns in 2012, and the name of the associated department.
+####  4. List the names of the 10 most populous towns in 2012, and the name of the associated department
 
 ```sql
 SELECT
@@ -604,7 +604,7 @@ Result:
 |                                      4260 |
 
 
-#### 8. List of towns with names that appear more than once, sorted so that those whose names are most commonly used by several towns appear first.
+#### 8. List of towns with names that appear more than once, sorted so that those whose names are most commonly used by several towns appear first
 
 ```sql
 SELECT
@@ -636,3 +636,26 @@ Results (only the first 10):
 |    36644 | ROURA                   |          3902 |
 |    36637 | IRACOUBO                |          2762 |
 |    36656 | POMPIDOU PAPA ICHTON    |          2628 |
+
+
+#### 10. List the departments with more than 2 million inhabitants
+
+```sql
+SELECT
+	d.departement_nom,
+	SUM(v.ville_population_2012) AS population_departement_2012
+FROM departement d
+	LEFT JOIN villes_france_free v ON d.departement_code = v.ville_departement
+GROUP BY d.departement_nom
+HAVING   population_departement_2012 > 2000000
+;
+```
+
+Results:
+
+| departement_nom | population_departement_2012 |
+|-----------------|-----------------------------|
+| Nord            |                     2565600 |
+| Paris           |                     2211000 |
+
+ 
