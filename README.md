@@ -658,4 +658,72 @@ Results:
 | Nord            |                     2565600 |
 | Paris           |                     2211000 |
 
- 
+
+#### 11. Replace the dashes with a space for all towns beginning with "SAINT-" (in the column containing names in capital letters).
+
+TLDR;
+
+```sql
+UPDATE villes_france_free
+    SET ville_nom = REPLACE(ville_nom, '-', ' ')
+WHERE ville_nom LIKE 'SAINT-%'
+;
+```
+
+Results (only the first 10):
+
+| ville_nom                    |
+|------------------------------|
+| SAINT ABIT                   |
+| SAINT ABRAHAM                |
+| SAINT ACHEUL                 |
+| SAINT ADJUTORY               |
+| SAINT ADRIEN                 |
+| SAINT AFFRIQUE               |
+| SAINT AFFRIQUE LES MONTAGNES |
+| SAINT AGATHON                |
+| SAINT AGIL                   |
+| SAINT AGNAN                  |
+
+
+
+I also played to build a non-destructive, but more sledgehammer-like version.
+
+This one helped me learn about temporary tables and their peculiarities when used within a transaction. 
+
+A **temporary table created within a transaction persists after the transaction is rolled back!**.  
+Once more, it is NOT dropped when the transaction is rolled back. This is why I dropped myself it after the rollback.
+
+AFAIK, `CREATE TEMPORARY TABLE ...` is the only DDL statement in MySQL that is not transactional. A temporary table is only removed at the end of the **session**. 
+[Source](https://dev.mysql.com/doc/refman/8.0/en/implicit-commit.html)
+
+```sql
+BEGIN;
+
+CREATE TEMPORARY TABLE villes_saint (
+	id  INT
+);
+
+INSERT INTO villes_saint (id)
+    SELECT ville_id
+    FROM villes_france_free
+    WHERE ville_nom LIKE 'SAINT-%'
+;
+
+UPDATE villes_france_free
+    SET ville_nom = REPLACE(ville_nom, '-', ' ')
+WHERE ville_nom LIKE 'SAINT-%'
+;
+
+SELECT
+    ville_nom
+FROM villes_france_free
+WHERE ville_id IN (SELECT id FROM villes_saint)
+ORDER BY ville_nom
+LIMIT 10
+;
+
+ROLLBACK;
+
+DROP TEMPORARY TABLE villes_saint;
+```
