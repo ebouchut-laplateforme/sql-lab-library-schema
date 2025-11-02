@@ -84,8 +84,8 @@ erDiagram
     }
 
     books        }o..|| authors        : "written by"
-    books        }o..o{ books_genres   : "classified by"
-    books_genres }o..o{ genres         : "classifies"
+    books        ||..o{ books_genres   : "classified by"
+    books_genres }o..|| genres         : "classifies"
 ```
 
 > [!NOTE] 
